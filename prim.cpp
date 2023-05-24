@@ -1,69 +1,63 @@
-#include <iostream>
-#include <vector>
-#include <queue>
-#include <string.h>
-#include <algorithm>
-#include <fstream>
-#include <sstream>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef pair<int, int> pii;
-
-const int MAXN = 10005;
-const int INF = 0x3f3f3f3f;
-
-vector<pii> adj[MAXN];
-int dist[MAXN];
-bool vis[MAXN];
-int parent[MAXN];
-vector<pii> mst;
-
-void prim(int source)
+bool comparePairs(const pair<int, int> &a, const pair<int, int> &b)
 {
-    priority_queue<pii, vector<pii>, greater<pii>> pq;
-
-    for (int i = 1; i < MAXN; i++)
+    if (a.first != b.first)
     {
-        dist[i] = INF;
-        vis[i] = false;
-        parent[i] = -1;
+        return a.first < b.first;
     }
+    else
+    {
+        return a.second < b.second;
+    }
+}
 
-    dist[source] = 0;
-    pq.push(make_pair(0, source));
+pair<vector<pair<int, int>>, int> prim(vector<pair<int, int>> adj[], int N, int startVertex)
+{
+    vector<pair<int, int>> result; // Vetor para armazenar os pares (vértice, pai)
+
+    int parent[N + 1];
+    int key[N + 1];
+    bool mstSet[N + 1];
+
+    for (int i = 1; i <= N; i++)
+        key[i] = INT_MAX, mstSet[i] = false;
+
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+
+    key[1] = 0;
+    parent[1] = -1;
+    pq.push({0, 1});
 
     while (!pq.empty())
     {
         int u = pq.top().second;
         pq.pop();
 
-        if (vis[u])
-            continue;
+        mstSet[u] = true;
 
-        vis[u] = true;
-
-        for (auto e : adj[u])
+        for (auto it : adj[u])
         {
-            int v = e.first;
-            int w = e.second;
-
-            if (!vis[v] && dist[v] > w)
+            int v = it.first;
+            int weight = it.second;
+            if (mstSet[v] == false && weight < key[v])
             {
-                dist[v] = w;
                 parent[v] = u;
-                pq.push(make_pair(dist[v], v));
+                key[v] = weight;
+                pq.push({key[v], v});
             }
         }
     }
 
-    for (int i = 2; i <= MAXN; i++)
+    int totalCost = 0;
+    for (int i = 2; i <= N; i++)
     {
-        if (parent[i] != -1)
-        {
-            mst.push_back(make_pair(min(i, parent[i]), max(i, parent[i])));
-        }
+        result.push_back(make_pair(i, parent[i]));
+        totalCost += key[i];
     }
+
+    return make_pair(result, totalCost);
 }
 
 int main(int argc, char *argv[])
@@ -71,8 +65,8 @@ int main(int argc, char *argv[])
     string input_file = "";
     string output_file = "";
     bool show_solution = false;
-    int source = 1;
-    // Parsing command line arguments
+    int startVertex = 1;
+
     for (int i = 1; i < argc; i++)
     {
         if (strcmp(argv[i], "-h") == 0)
@@ -83,7 +77,7 @@ int main(int argc, char *argv[])
             cout << "-f <arquivo>: indica o 'arquivo' que contém o grafo de entrada" << endl;
             cout << "-s: mostra a solução (em ordem crescente)" << endl;
             cout << "-i: vértice inicial (para o algoritmo de Prim)" << endl;
-                return 0;
+            return 0;
         }
         else if (strcmp(argv[i], "-o") == 0 && i < argc - 1)
         {
@@ -99,11 +93,10 @@ int main(int argc, char *argv[])
         }
         else if (strcmp(argv[i], "-i") == 0 && i < argc - 1)
         {
-            source = atoi(argv[++i]);
+            startVertex = atoi(argv[++i]);
         }
     }
 
-    // If no input file is specified, exit the program.
     if (input_file == "")
     {
         cerr << "No input file specified. Use the -f parameter." << endl;
@@ -117,19 +110,25 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    int n, m;
-    fin >> n >> m;
+    int N, m;
+    fin >> N >> m;
+    vector<pair<int, int>> adj[N + 1];
+
+    int a, b, wt;
     for (int i = 0; i < m; i++)
     {
-        int u, v, w;
-        fin >> u >> v >> w;
-        adj[u].push_back(make_pair(v, w));
-        adj[v].push_back(make_pair(u, w));
+        fin >> a >> b >> wt;
+        adj[a].push_back(make_pair(b, wt));
+        adj[b].push_back(make_pair(a, wt));
     }
 
     fin.close();
 
-    prim(source);
+    pair<vector<pair<int, int>>, int> result = prim(adj, N, startVertex);
+
+    vector<pair<int, int>> pairsArray = result.first; // Extrair os pares do vetor result
+
+    sort(pairsArray.begin(), pairsArray.end(), comparePairs); // Ordenar o vetor de pares
 
     if (!(output_file == ""))
     {
@@ -139,28 +138,33 @@ int main(int argc, char *argv[])
             cerr << "Could not open output file: " << output_file << endl;
             return 1;
         }
-
-        std::sort(mst.begin(), mst.end());
-
-        for (int i = 0; i < min((int)mst.size() - 1, m); i++)
+        if (show_solution)
         {
-            fout << "(" << mst[i].first << "," << mst[i].second << ") ";
+            for (auto it : pairsArray)
+                fout << "(" << it.second << "," << it.first << ") ";
         }
-        cout << endl;
+        else
+        {
+            fout << " " << result.second << endl;
+        }
 
         fout.close();
     }
 
     if (show_solution)
     {
-        std::sort(mst.begin(), mst.end());
-
-        for (int i = 0; i < min((int)mst.size() - 1, m); i++)
-        {
-            cout << "(" << mst[i].first << "," << mst[i].second << ") ";
-        }
-        cout << endl;
+        for (auto it : pairsArray)
+            cout << "(" << it.second << "," << it.first << ") ";
+    }
+    else
+    {
+        cout << " " << result.second << endl;
     }
 
     return 0;
 }
+
+//CUSTO DO PRIM DA AGM, SE N COLOCAR O -S.
+//KRUSKAL ==
+//BOTAR OS BINARIOS NA PASTA BAT1 E RODAR O BAT1.SH
+//./bat1.sh
