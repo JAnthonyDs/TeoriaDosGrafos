@@ -1,0 +1,10 @@
+CC = g++
+CFLAGS = -std=c++11
+
+all: floydWarshall.bin
+
+kruskal.bin: floydWarshall.cpp
+	$(CC) $(CFLAGS) floydWarshall.cpp -o floydWarshall.bin
+
+clean:
+	rm -f floydWarshall.bin

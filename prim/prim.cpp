@@ -163,8 +163,3 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-
-//CUSTO DO PRIM DA AGM, SE N COLOCAR O -S.
-//KRUSKAL ==
-//BOTAR OS BINARIOS NA PASTA BAT1 E RODAR O BAT1.SH
-//./bat1.sh
