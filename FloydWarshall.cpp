@@ -1,10 +1,17 @@
 #include <iostream>
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <string.h>
+#include <algorithm>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
 #define INFINITO 1000000
 
-int main(){
+int main(int argc, char *argv[]){
     string input_file = "";
     string output_file = "";
     bool show_solution = false;
@@ -54,15 +61,7 @@ int main(){
         return 1;
     }
 
-    int n, m;
-    fin >> n >> m;
-    for (int i = 0; i < m; i++)
-    {
-        int u, v, w;
-        fin >> u >> v >> w;
-        adj[u].push_back(make_pair(v, w));
-        adj[v].push_back(make_pair(u, w));
-    }
+    
 
     fin.close();
 
@@ -75,28 +74,10 @@ int main(){
             return 1;
         }
 
-        std::sort(mst.begin(), mst.end());
-
-        for (int i = 0; i < min((int)mst.size() - 1, m); i++)
-        {
-            fout << "(" << mst[i].first << "," << mst[i].second << ") ";
-        }
-        cout << endl;
-
         fout.close();
     }
 
-    if (show_solution)
-    {
-        std::sort(mst.begin(), mst.end());
-
-        for (int i = 0; i < min((int)mst.size() - 1, m); i++)
-        {
-            cout << "(" << mst[i].first << "," << mst[i].second << ") ";
-        }
-        cout << endl;
-    }
-
+    
     int d0[5][5] = {
         {0,3,8,INFINITO,-4},
         {INFINITO,0,INFINITO,1,7},
