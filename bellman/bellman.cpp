@@ -58,9 +58,9 @@ void help()
 {
 
   cout << "-h : mostra o help" << endl;
-  cout << "-o <arquivo> : redireciona a saida para o ‘‘arquivo’’" << endl;
-  cout << "-f <arquivo> : indica o ‘‘arquivo’’ que contém o grafo de entrada" << endl;
-  cout << "-i : vértice inicial (para o algoritmo de Prim)" << endl;
+  cout << "-o <arquivo> : redireciona a saida para o 'arquivo'" << endl;
+  cout << "-f <arquivo> : indica o 'arquivo' que contém o grafo de entrada" << endl;
+  cout << "-i : vértice inicial" << endl;
 }
 
 int main(int argc, char const *argv[])

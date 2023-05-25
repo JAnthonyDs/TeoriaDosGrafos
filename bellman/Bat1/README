@@ -1,8 +1,9 @@
 Conteúdo
-- Consjunto de instâncias (instances)
-- Soluções do problema da árvore geradora mínima (gabarito_agm.txt)
+- Conjunto de instâncias (instances)
 - Soluções do problema do caminho mínimo (diretório sp)
 - Script para testar as soluções
 
-Para executar o script compile seu binários. Se preciso atualize os nomes dos arquivos no início do script.
-Para testar se as arestas pertencem ao grafo original compile o arquivo agm.cpp e gere o binário com o nome agm.
+Passos para executar o script Bat1.sh:
+    1 - Na pasta bellman, digite make no terminal. Dessa forma, será gerado um arquivo .bin.
+    2 - Transfira o arquivo gerado para a pasta Bat1.
+    3 - Na pasta Bat1 há um script, Bat1.sh, execute esse script e serão feitos 20 casos de teste para o algoritmo de Bellman. Caso esses testes sejam executados com êxito, irá printar, logo abaixo do nome da instância testada, um OK. Caso algo dê errado, ira aparecer ERRO no terminal. 

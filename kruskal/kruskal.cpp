@@ -112,6 +112,7 @@ int main(int argc, char *argv[])
             cout << "-o <arquivo>: redireciona a saida para o 'arquivo'" << endl;
             cout << "-f <arquivo>: indica o 'arquivo' que contém o grafo de entrada" << endl;
             cout << "-s: mostra a solução (em ordem crescente)" << endl;
+            cout << "-i: vértice inicial" << endl;
             return 0;
         }
         else if (strcmp(argv[i], "-o") == 0 && i < argc - 1)
