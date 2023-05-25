@@ -66,75 +66,71 @@ void help()
 int main(int argc, char const *argv[])
 {
 
-  int write = 0, file = 0, src = 0;
-  std::string arName;
-  std::string inputFile;
+  string input_file = "";
+  string output_file = "";
+  bool show_solution = false;
+  int startVertex = 1;
+  int write = 0;
 
-  for (int i = 1; i < argc; i++)
+    for (int i = 1; i < argc; i++)
   {
-    if (strcmp(argv[i], "-h") == 0)
-    {
-      help();
-    }
-    else if (strcmp(argv[i], "-o") == 0)
-    {
-      write = 1;
-      arName = argv[i + 1];
-    }
-    else if (strcmp(argv[i], "-f") == 0)
-    {
-      inputFile = argv[i + 1];
-      file = 1;
-    }
-    else if (strcmp(argv[i], "-i") == 0)
-    {
-      src = std::stoi(argv[i + 1]);
-    }
+      if (strcmp(argv[i], "-h") == 0)
+      {
+          cout << "Help:" << endl;
+          cout << "-h: mostra o help" << endl;
+          cout << "-o <arquivo>: redireciona a saida para o 'arquivo'" << endl;
+          cout << "-f <arquivo>: indica o 'arquivo' que contém o grafo de entrada" << endl;
+          cout << "-s: mostra a solução (em ordem crescente)" << endl;
+          cout << "-i: vértice inicial (para o algoritmo de Prim)" << endl;
+          return 0;
+      }
+      else if (strcmp(argv[i], "-o") == 0 && i < argc - 1)
+      {
+        write = 1;
+        output_file = argv[++i];
+      }
+      else if (strcmp(argv[i], "-f") == 0 && i < argc - 1)
+      {
+          input_file = argv[++i];
+      }
+      else if (strcmp(argv[i], "-s") == 0)
+      {
+          show_solution = true;
+      }
+      else if (strcmp(argv[i], "-i") == 0 && i < argc - 1)
+      {
+          startVertex = atoi(argv[++i]);
+      }
   }
 
-  if (file != 1)
+    if (input_file == "")
   {
-    int n, m;
-    cin >> n >> m;
-
-    vector<vector<int>> Grafo;
-    for (int i = 0; i < m; i++)
-    {
-      int u, v, w;
-      cin >> u >> v >> w;
-      u--, v--;
-      Grafo.push_back({u, v, w});
-      Grafo.push_back({v, u, w});
-    }
-
-    if (src == 0)
-    {
-      src = 1;
-    }
-
-    Bellman(Grafo, n, write, arName, src);
+      cerr << "No input file specified. Use the -f parameter." << endl;
+      return 1;
   }
-  else
+
+  ifstream fin(input_file);
+  if (!fin)
   {
-    std::ifstream arquivo(inputFile);
-    int n, m;
-    arquivo >> n >> m;
-
-    vector<vector<int>> Grafo;
-    for (int i = 0; i < m; i++)
-    {
-      int u, v, w;
-      arquivo >> u >> v >> w;
-      u--, v--;
-      Grafo.push_back({u, v, w});
-      Grafo.push_back({v, u, w});
-    }
-
-    if (src == 0)
-    {
-      src = 1;
-    }
-
-    Bellman(Grafo, n, write, arName, src);
+      cerr << "Could not open input file: " << input_file << endl;
+      return 1;
   }
+
+  int n, m;
+  fin >> n >> m;
+
+  vector<vector<int>> Grafo;
+  for (int i = 0; i < m; i++)
+  {
+    int u, v, w;
+    fin >> u >> v >> w;
+    u--, v--;
+    Grafo.push_back({u, v, w});
+    Grafo.push_back({v, u, w});
+  }
+
+  fin.close();
+
+  Bellman(Grafo, n, write, output_file, startVertex);
+
 }
